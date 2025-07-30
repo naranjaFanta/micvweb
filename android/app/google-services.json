@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323992758430",
+    "project_id": "micvweb-32323",
+    "storage_bucket": "micvweb-32323.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323992758430:android:0446a9faf145ccb6b1b38f",
+        "android_client_info": {
+          "package_name": "com.example.eduardovicgimenezcv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7okrMKE716koMqiPwQFFdYLZRgsnneqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
