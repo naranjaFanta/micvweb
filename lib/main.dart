@@ -6,9 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:flutter/foundation.dart'
-   // show kIsWeb; // por si más adelante querés usar condicionales
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +40,7 @@ class CvApp extends StatelessWidget {
   }
 }
 
-enum Section { home, about, skills, experience, projects, contact }
+enum Section { home, about, skills, experience, education, projects, contact }
 
 class CvHome extends StatefulWidget {
   const CvHome({super.key});
@@ -92,6 +89,10 @@ class _CvHomeState extends State<CvHome> {
         child: Text('Experiencia', style: style),
       ),
       TextButton(
+        onPressed: () => _scrollTo(Section.education),
+        child: Text('Formación', style: style),
+      ),
+      TextButton(
         onPressed: () => _scrollTo(Section.projects),
         child: Text('Proyectos', style: style),
       ),
@@ -114,6 +115,7 @@ class _CvHomeState extends State<CvHome> {
           _Section(key: _keys[Section.about], child: const _About()),
           _Section(key: _keys[Section.skills], child: const _Skills()),
           _Section(key: _keys[Section.experience], child: const _Experience()),
+          _Section(key: _keys[Section.education], child: const _Education()),
           _Section(key: _keys[Section.projects], child: const _Projects()),
           _Section(key: _keys[Section.contact], child: _Contact()),
           const SizedBox(height: 24),
@@ -156,6 +158,11 @@ class _CvHomeState extends State<CvHome> {
                 label: Text('Experiencia'),
               ),
               NavigationRailDestination(
+                icon: Icon(Icons.school_outlined),
+                label: Text('Formación'),
+              ),
+
+              NavigationRailDestination(
                 icon: Icon(Icons.folder_open),
                 label: Text('Proyectos'),
               ),
@@ -189,6 +196,81 @@ class _CvHomeState extends State<CvHome> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _Education extends StatelessWidget {
+  const _Education();
+
+  @override
+  Widget build(BuildContext context) {
+    const instituto =
+        'Instituto ORT Argentina (Instituto Tecnológico de Educación Superior ORT)';
+    final cs = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _H2('Formación'),
+        const SizedBox(height: 12),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _EduItem(
+                  titulo: 'Analista Programador',
+                  institucion: instituto,
+                  anio: '2024',
+                ),
+                const Divider(height: 24),
+                _EduItem(
+                  titulo: 'Analista de Sistemas',
+                  institucion: instituto,
+                  anio: '2025',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EduItem extends StatelessWidget {
+  final String titulo;
+  final String institucion;
+  final String anio;
+  const _EduItem({
+    required this.titulo,
+    required this.institucion,
+    required this.anio,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final titleStyle = Theme.of(
+      context,
+    ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600);
+    final cs = Theme.of(context).colorScheme;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(titulo, style: titleStyle),
+              const SizedBox(height: 4),
+              Text(institucion, style: TextStyle(color: cs.outline)),
+            ],
+          ),
+        ),
+        Text(anio, style: TextStyle(color: cs.outline)),
+      ],
     );
   }
 }
@@ -235,7 +317,7 @@ class _HeroHeader extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'Analista de Sistemas • Analista Programador',
+          '• Analista de Sistemas',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium,
         ),
@@ -257,53 +339,127 @@ class _HeroHeader extends StatelessWidget {
 
 class _About extends StatelessWidget {
   const _About();
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        _H2('Sobre mí'),
-        SizedBox(height: 12),
-        Text(
-          'Soy Analista de Sistemas con foco en Flutter para web y Android. Me gusta convertir requerimientos '
-          'en interfaces limpias y rápidas, integrando Firebase y bases SQL cuando hace falta. Trabajo ordenado '
-          'con Git/GitHub, buenas prácticas y pruebas básicas. Busco mi primera experiencia profesional para '
-          'aportar valor desde el día uno.'
-          ' Estoy abierto a aprender nuevas tecnologias que se adapten a lo que el cliente necesite.',
+      children: [
+        const _H2('Sobre mí'),
+        const SizedBox(height: 12),
+
+        SizedBox(
+          width: double.infinity,
+          child: Card(
+            elevation: 1,
+            clipBehavior: Clip.antiAlias,
+            child: const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Soy Analista de Sistemas con foco en Flutter para web y Android. Me gusta convertir requerimientos '
+                'en interfaces limpias y rápidas, integrando Firebase y bases SQL cuando hace falta. Trabajo ordenado '
+                'con Git/GitHub, buenas prácticas y pruebas básicas. Busco mi primera experiencia profesional para '
+                'aportar valor desde el día uno. Estoy abierto a aprender nuevas tecnologías que se adapten a lo que el cliente necesite.',
+              ),
+            ),
+          ),
         ),
       ],
     );
   }
 }
 
+
 class _Skills extends StatelessWidget {
   const _Skills();
+
   @override
   Widget build(BuildContext context) {
-    final skills = const [
-      'Flutter (Web & Android)',
-      'Dart',
-      'Firebase (Auth, Firestore, Storage, Hosting)',
-      'Java (Eclipse)',
-      'SQL (modelado y consultas)',
-      'Principios OOP y buenas prácticas',
-      'Pruebas y debugging básico',
-    ];
+   final groups = <String, List<String>>{
+      'Frontend': const [
+        'Flutter (Web & Android)',
+        'Dart',
+        'Vue',
+
+      ],
+      'Backend / Cloud': const [
+        'JavaScript',
+        'Node.js',
+        'Firebase (Auth, Firestore, Storage, Hosting)',
+      ],
+      'Bases de datos': const [
+        'SQL (modelado y consultas)',
+      ],
+      'Herramientas': const [
+        'Git & GitHub',
+      ],
+      'Buenas prácticas': const [
+        'Principios POO y buenas prácticas',
+        'Pruebas y debugging básico',
+      ],
+    };
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _H2('Habilidades'),
         const SizedBox(height: 12),
+
+        SizedBox(
+          width: double.infinity,
+          child: Card(
+            elevation: 1,
+            clipBehavior: Clip.antiAlias,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...groups.entries.map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _SkillGroup(title: e.key, items: e.value),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SkillGroup extends StatelessWidget {
+  final String title;
+  final List<String> items;
+  const _SkillGroup({super.key, required this.title, required this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    final titleStyle = Theme.of(context)
+        .textTheme
+        .titleMedium
+        ?.copyWith(fontWeight: FontWeight.w600);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: titleStyle),
+        const SizedBox(height: 8),
         Wrap(
+          alignment: WrapAlignment.start,       
+          runAlignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.start,
           spacing: 8,
           runSpacing: 8,
-          children: skills
-              .map(
-                (s) => Chip(
-                  label: Text(s),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              )
+          children: items
+              .map((s) => Chip(
+                    label: Text(s),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ))
               .toList(),
         ),
       ],
@@ -484,144 +640,176 @@ class _ContactState extends State<_Contact> {
     super.dispose();
   }
 
- Future<void> _submit() async {
-  if (!_formKey.currentState!.validate()) return;
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  setState(() => _sending = true);
-  try {
-    final data = {
-      'name': _nameCtrl.text.trim(),
-      'company': _companyCtrl.text.trim(),
-      'email': _emailCtrl.text.trim().toLowerCase(),
-      'phone': _phoneCtrl.text.trim(),
-      'message': _messageCtrl.text.trim(),
-      'source': 'cv-web',          // útil para segmentar
-      'status': 'new',             // para tu bandeja (new|replied|archived)
-      'createdAt': FieldValue.serverTimestamp(),
-    };
+    setState(() => _sending = true);
+    try {
+      final data = <String, dynamic>{
+        'name': _nameCtrl.text.trim(),
+        'email': _emailCtrl.text.trim().toLowerCase(),
+        'message': _messageCtrl.text.trim(),
+        'source': 'cv-web',
+        'status': 'new',
+        'createdAt': FieldValue.serverTimestamp(),
+        if (_companyCtrl.text.trim().isNotEmpty)
+          'company': _companyCtrl.text.trim(),
+        if (_phoneCtrl.text.trim().isNotEmpty) 'phone': _phoneCtrl.text.trim(),
+      };
 
-    await FirebaseFirestore.instance.collection('inquiries').add(data);
+      await FirebaseFirestore.instance.collection('inquiries').add(data);
 
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('¡Gracias! Tu consulta fue enviada.')),
-    );
-    _formKey.currentState!.reset();
-    _nameCtrl.clear();
-    _companyCtrl.clear();
-    _emailCtrl.clear();
-    _phoneCtrl.clear();
-    _messageCtrl.clear();
-  } on FirebaseException catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No se pudo enviar la consulta: ${e.message ?? e.code}')),
-    );
-  } catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No se pudo enviar la consulta: $e')),
-    );
-  } finally {
-    if (mounted) setState(() => _sending = false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('¡Gracias! Tu consulta fue enviada.')),
+      );
+      _formKey.currentState!.reset();
+      _nameCtrl.clear();
+      _companyCtrl.clear();
+      _emailCtrl.clear();
+      _phoneCtrl.clear();
+      _messageCtrl.clear();
+    } on FirebaseException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'No se pudo enviar la consulta: ${e.message ?? e.code}',
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo enviar la consulta: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _H2('Contacto'),
         const SizedBox(height: 12),
-        Form(
-          key: _formKey,
-          child: Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              SizedBox(
-                width: 320,
-                child: TextFormField(
-                  controller: _nameCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Nombre y apellido',
+        Card(
+          elevation: 1,
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Te respondo a la brevedad.',
+                    style: TextStyle(color: cs.outline),
                   ),
-                  textInputAction: TextInputAction.next,
-                  validator: (v) => (v == null || v.trim().isEmpty)
-                      ? 'Ingresá tu nombre'
-                      : null,
-                ),
-              ),
-              SizedBox(
-                width: 320,
-                child: TextFormField(
-                  controller: _companyCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Empresa (opcional)',
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      SizedBox(
+                        width: 320,
+                        child: TextFormField(
+                          controller: _nameCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Nombre y apellido',
+                          ),
+                          textInputAction: TextInputAction.next,
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Ingresá tu nombre'
+                              : null,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 320,
+                        child: TextFormField(
+                          controller: _companyCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Empresa (opcional)',
+                          ),
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 320,
+                        child: TextFormField(
+                          controller: _emailCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Email de contacto',
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          validator: (v) {
+                            final email = v?.trim() ?? '';
+                            final ok = RegExp(
+                              r'^[^@]+@[^@]+\.[^@]+$',
+                            ).hasMatch(email);
+                            return ok ? null : 'Ingresá un email válido';
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 320,
+                        child: TextFormField(
+                          controller: _phoneCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Teléfono (opcional)',
+                          ),
+                          keyboardType: TextInputType.phone,
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 660,
+                        child: TextFormField(
+                          controller: _messageCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Consulta / Descripción',
+                            hintText:
+                                'Dejame tu consulta y un email y/o teléfono para contactarme a la brevedad.',
+                          ),
+                          maxLines: 5,
+                          validator: (v) => (v == null || v.trim().length < 10)
+                              ? 'Contame un poco más (mín. 10 caracteres)'
+                              : null,
+                        ),
+                      ),
+
+                      SizedBox(
+                        width: 660,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: FilledButton.icon(
+                            onPressed: _sending ? null : _submit,
+                            icon: _sending
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.send),
+                            label: Text(
+                              _sending ? 'Enviando...' : 'Enviar consulta',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  textInputAction: TextInputAction.next,
-                ),
+                ],
               ),
-              SizedBox(
-                width: 320,
-                child: TextFormField(
-                  controller: _emailCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Email de contacto',
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  validator: (v) {
-                    final email = v?.trim() ?? '';
-                    final ok = RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email);
-                    return ok ? null : 'Ingresá un email válido';
-                  },
-                ),
-              ),
-              SizedBox(
-                width: 320,
-                child: TextFormField(
-                  controller: _phoneCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Teléfono (opcional)',
-                  ),
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                ),
-              ),
-              SizedBox(
-                width: 660,
-                child: TextFormField(
-                  controller: _messageCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Consulta / Descripción',
-                  ),
-                  maxLines: 5,
-                  validator: (v) => (v == null || v.trim().length < 10)
-                      ? 'Contame un poco más (mín. 10 caracteres)'
-                      : null,
-                ),
-              ),
-              SizedBox(
-                width: 660,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: FilledButton.icon(
-                    onPressed: _sending ? null : _submit,
-                    icon: _sending
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.send),
-                    label: Text(_sending ? 'Enviando...' : 'Enviar consulta'),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ],
